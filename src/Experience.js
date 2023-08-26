@@ -1,4 +1,4 @@
-import { Center, OrbitControls, Stars,Sparkles, shaderMaterial, useGLTF, useTexture } from '@react-three/drei'
+import { Center, OrbitControls, Stars,Sparkles, shaderMaterial, useGLTF, useTexture, Wireframe } from '@react-three/drei'
 import portalFragmentShader from "./shaders/portal/fragment.js"
 import portalVertexShader from "./shaders/portal/vertex.js"
 import * as THREE from "three"
@@ -12,14 +12,18 @@ export default function Experience()
 
     const colorStart = useControls({startColor:"#ffffff"})
     const colorEnd = useControls({endcolor:"#000000"})
-
+    const {Wireframe} = useControls({
+        Wireframe:false
+    })
+    // const perf = useControls({visible:true})
     const PortalMaterial = shaderMaterial({
         uTime:0,
         uColorStart:new THREE.Color(`#ffffff`),
         uColorEnd:new THREE.Color(`#000000`)
     },
     portalVertexShader,
-    portalFragmentShader
+    portalFragmentShader,
+    
     )
 
     extend({PortalMaterial})
@@ -37,14 +41,14 @@ export default function Experience()
     bakedTexture.flipY=false
     
     return <>
-    <Perf position='top-left' />
+    {/* {perf.visible && <Perf position='top-left' />} */}
 
             <OrbitControls makeDefault />
             
             {/* Portal */}
             <Center>
             <mesh geometry={nodes.baked.geometry} >
-                <meshBasicMaterial map={bakedTexture} />
+                <meshBasicMaterial map={bakedTexture} wireframe={Wireframe} />
             </mesh>
 
             {/* Pole Lights */}
@@ -53,14 +57,14 @@ export default function Experience()
                 geometry={nodes.poleLightA.geometry}
                 position={nodes.poleLightA.position}
                  >
-                <meshBasicMaterial color="#ffffe5"/>
+                <meshBasicMaterial color="#ffffe5" wireframe={Wireframe}/>
             </mesh>
 
             <mesh 
                 geometry={nodes.poleLightB.geometry}
                 position={nodes.poleLightB.position}
                  >
-                <meshBasicMaterial color="#ffffe5" />
+                <meshBasicMaterial color="#ffffe5" wireframe={Wireframe}/>
             </mesh>
 
             {/* Portal Light */}
@@ -70,14 +74,14 @@ export default function Experience()
                 position={nodes.portalLight.position}
                 rotation={nodes.portalLight.rotation}
             >
-                    <portalMaterial ref={portalref} />
+                    <portalMaterial ref={portalref}  />
             </mesh>
             
             {/* Fireflies */}
             <Sparkles 
                 size={6}
                 scale={[4,2,4]}
-                count={60}
+                count={50}
                 speed={0.5}
                 position-y={1.2}
             />
